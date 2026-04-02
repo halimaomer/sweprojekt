@@ -33,6 +33,7 @@ class Hotel(Base):
     """Der in einer 1:1-Beziehung referenzierte Standort."""
 
     zimmer: Mapped[list[Zimmer]] = relationship(
+        back_populates="hotel",
         cascade="save-update, delete",
     )
     """Die in einer 1:N-Beziehung referenzierten Zimmer."""

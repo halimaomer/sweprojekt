@@ -28,9 +28,14 @@ class Zimmer(Base):
     hotel_id: Mapped[int] = mapped_column(ForeignKey("hotel.id"))
     """ID des zugehörigen Hotels als Fremdschlüssel in der DB-Tabelle."""
 
+    hotel: Mapped[Hotel] = relationship(  # noqa: F821 # ty: ignore[unresolved-reference] # pyright: ignore[reportUndefinedVariable]
+    back_populates="zimmer",
+    )
+    """Das zugehörige transiente Hotel-Objekt."""
+
     def __repr__(self) -> str:
         """Ausgabe eines Zimmers als String ohne die Hoteldaten."""
         return (
-            f"Preis(id={self.id}, preis={self.preis}, "
+            f"Zimmer(id={self.id}, preis={self.preis}, "
             + f"zimmernummer={self.zimmernummer}"
         )
