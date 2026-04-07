@@ -1,5 +1,5 @@
 info:
-  name: Suche nachname, email, ... vom Patienten mit ID 20
+  name: Suche name, standort, zimmer, ... vom Hotel mit ID 1
   type: graphql
   seq: 1
 
@@ -12,29 +12,28 @@ graphql:
       disabled: true
   body:
     query: |-
-      query ($patientId: ID! = "20") {
-        patient(patientId: $patientId) {
+      query ($hotelId: ID! = "1") {
+        hotel(hotelId: $hotelId) {
           id
-          version
-          nachname
-          email
-          kategorie
-          hasNewsletter
-          geburtsdatum
-          homepage
-          geschlecht
-          familienstand
-          adresse {
+          name
+          standort {
+            strasse
+            hausnummer
             plz
             ort
+            land
           }
-          fachaerzte
-          username
+          zimmer {
+            preis
+            zimmernummer
+          }
+          erzeugt
+          aktualisiert
         }
       }
     variables: |-
       {
-        "patientId": "20"
+        "hotelId": "20"
       }
   auth: inherit
 
@@ -46,40 +45,19 @@ runtime:
     - expression: res.headers['content-type']
       operator: eq
       value: application/json
-    - expression: res.body.data.patient
+    - expression: res.body.data.hotel
       operator: isJson
-    - expression: res.body.data.patient.version
+    - expression: res.body.data.hotel.id
       operator: gte
       value: "0"
-    - expression: res.body.data.patient.nachname
+    - expression: res.body.data.hotel.name
       operator: isString
-    - expression: res.body.data.patient.nachname
+    - expression: res.body.data.hotel.name
       operator: isNotEmpty
-    - expression: res.body.data.patient.email
-      operator: isString
-    - expression: res.body.data.patient.email
-      operator: isNotEmpty
-    - expression: res.body.data.patient.kategorie
-      operator: gt
-      value: "0"
-    - expression: res.body.data.patient.hasNewsletter
-      operator: isBoolean
-    - expression: res.body.data.patient.geburtsdatum
-      operator: isString
-    - expression: res.body.data.patient.homepage
-      operator: isString
-    - expression: res.body.data.patient.geschlecht
-      operator: isString
-    - expression: res.body.data.patient.familienstand
-      operator: isString
-    - expression: res.body.data.patient.adresse
+    - expression: res.body.data.hotel.standort
       operator: isJson
-    - expression: res.body.data.patient.fachaerzte
+    - expression: res.body.data.hotel.zimmer
       operator: isArray
-    - expression: res.body.data.patient.username
-      operator: isString
-    - expression: res.body.data.patient.username
-      operator: isNotEmpty
 
 settings:
   encodeUrl: true
