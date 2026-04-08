@@ -17,12 +17,7 @@ http:
     type: json
     data: |-
       {
-          "nachname": "Alphaput",
-          "email": "alpha@acme.de.put",
-          "kategorie": 9,
-          "has_newsletter": false,
-          "geburtsdatum": "2022-01-09",
-          "homepage": "https://www.acme.ch.put"
+        "name": "Hotel Alpha PUT"
       }
   auth: inherit
 

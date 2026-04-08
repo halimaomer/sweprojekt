@@ -17,7 +17,7 @@ http:
     type: json
     data: |-
       {
-          "name": "Hotel Alpha PUT",
+          "name": "Hotel Alpha PUT"
       }
   auth: inherit
 
