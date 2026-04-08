@@ -1,5 +1,5 @@
 info:
-  name: Neuer Patient mit ungültigen Daten
+  name: Neues Hotel mit ungültigen Daten
   type: http
   seq: 3
 
@@ -14,21 +14,20 @@ http:
     type: json
     data: |-
       {
-          "nachname": "falscher_nachname",
-          "email": "falsche_email@",
-          "kategorie": 11,
-          "has_newsletter": true,
-          "geburtsdatum": "2022-02-01",
-          "homepage": "https://?!",
-          "geschlecht": "X",
-          "familienstand": "X",
-          "adresse": {
-              "plz": "1234",
-              "ort": "Restort"
-          },
-          "rechnungen": [],
-          "fachaerzte": [],
-          "username": "test"
+        "name": "",
+        "standort": {
+          "strasse": "",
+          "hausnummer": "",
+          "plz": "123",
+          "ort": "",
+          "land": ""
+        },
+        "zimmer": [
+          {
+            "preis": "-10",
+            "zimmernummer": ""
+          }
+        ]
       }
   auth:
     type: bearer
@@ -40,7 +39,7 @@ runtime:
       code: |-
         test('Fehlermeldungen im Response Body', () => {
             const body = res.getBody();
-            const props = ['nachname', 'email', 'kategorie', 'homepage', 'geschlecht', 'familienstand', 'adresse'];
+            const props = ['name', 'standort', 'zimmer'];
 
             // FastAPI
             if (Object.keys(body).length === 1 && Array.isArray(body.detail)) {

@@ -1,7 +1,7 @@
 info:
-  name: Neuer Patient mit bereits existierender Email
+  name: Neues Hotel mit bereits existierendem Standort
   type: http
-  seq: 2
+  seq: 3
 
 http:
   method: POST
@@ -14,32 +14,22 @@ http:
     type: json
     data: |-
       {
-          "nachname": "Nachnamerest",
-          "email": "alice@acme.de",
-          "kategorie": 1,
-          "has_newsletter": true,
-          "geburtsdatum": "2022-02-01",
-          "homepage": "https://test.rest",
-          "geschlecht": "W",
-          "familienstand": "L",
-          "adresse": {
-              "plz": "99999",
-              "ort": "Restort"
-          },
-          "rechnungen": [
-              {
-                  "betrag": "999.99",
-                  "waehrung": "EUR"
-              }
-          ],
-          "fachaerzte": [
-              "N"
-          ],
-          "username": "emailexists"
+        "name": "Hotel Doppelstandort",
+        "standort": {
+          "strasse": "Hauptstrasse",
+          "hausnummer": "1",
+          "plz": "76133",
+          "ort": "Karlsruhe",
+          "land": "Deutschland"
+        },
+        "zimmer": [
+          {
+            "preis": "120.00",
+            "zimmernummer": "102"
+          }
+        ]
       }
-  auth:
-    type: bearer
-    token: "{{TOKEN}}"
+  auth: inherit
 
 runtime:
   assertions:
@@ -48,7 +38,7 @@ runtime:
       value: "422"
     - expression: res.body.detail
       operator: contains
-      value: Email
+      value: Standort
 
 settings:
   encodeUrl: true

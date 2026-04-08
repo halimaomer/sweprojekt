@@ -5,13 +5,13 @@ info:
 
 http:
   method: GET
-  url: "{{restUrl}}?Nachname=Xxx"
+  url: "{{restUrl}}?name=DasSchlechtesteHotelDeutschlands"
   headers:
     - name: Accept
       value: application/json
   params:
-    - name: Nachname
-      value: Xxx
+    - name: name
+      value: DasSchlechtesteHotelDeutschlands
       type: query
   auth: inherit
 

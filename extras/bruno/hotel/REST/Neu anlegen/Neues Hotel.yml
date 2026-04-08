@@ -1,5 +1,5 @@
 info:
-  name: Neuer Patient
+  name: Neues Hotel
   type: http
   seq: 1
 
@@ -14,28 +14,20 @@ http:
     type: json
     data: |-
       {
-          "nachname": "Nachnamerest",
-          "email": "testrest@test.rest",
-          "kategorie": 1,
-          "has_newsletter": true,
-          "geburtsdatum": "2022-02-01",
-          "homepage": "https://test.rest",
-          "geschlecht": "W",
-          "familienstand": "L",
-          "adresse": {
-              "plz": "99999",
-              "ort": "Restort"
-          },
-          "rechnungen": [
-              {
-                  "betrag": "999.99",
-                  "waehrung": "EUR"
-              }
-          ],
-          "fachaerzte": [
-              "N"
-          ],
-          "username": "testrest"
+        "name": "Hotel HKA",
+        "standort": {
+          "strasse": "Hauptstrasse",
+          "hausnummer": "1",
+          "plz": "76133",
+          "ort": "Karlsruhe",
+          "land": "Deutschland"
+        },
+        "zimmer": [
+          {
+            "preis": "99.99",
+            "zimmernummer": "101"
+          }
+        ]
       }
   auth: inherit
 

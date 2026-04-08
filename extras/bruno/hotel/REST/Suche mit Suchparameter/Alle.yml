@@ -1,5 +1,5 @@
 info:
-  name: Alle
+  name: Alle Hotels
   type: http
   seq: 1
 
@@ -18,7 +18,7 @@ runtime:
         test('Body: id > 0', () => {
           res.getBody()
             .content
-            .map(patient => patient.id)
+            .map(hotel => hotel.id)
             .forEach(id => expect(id).to.be.above(0));
         });
   assertions:

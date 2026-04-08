@@ -1,4 +1,4 @@
-name: patient
+name: hotel
 variables:
   - name: clientId
     value: python-client

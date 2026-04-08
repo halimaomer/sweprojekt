@@ -13,12 +13,19 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
--- Aufruf:   psql --dbname=patient --username=patient --file=/init/patient/sql/create-schema.sql
+-- Aufruf:   psql --dbname=postgres --username=postgres --file=/init/patient/sql/create-db.sql
 
--- https://www.postgresql.org/docs/devel/app-psql.html
--- https://www.postgresql.org/docs/current/ddl-schemas.html
--- https://www.postgresql.org/docs/current/ddl-schemas.html#DDL-SCHEMAS-CREATE
--- "user-private schema" (Default-Schema: public)
-CREATE SCHEMA IF NOT EXISTS AUTHORIZATION patient;
+-- https://www.postgresql.org/docs/current/sql-createuser.html
+-- https://www.postgresql.org/docs/current/sql-createrole.html
+CREATE USER hotel PASSWORD 'p';
 
-ALTER ROLE patient SET search_path = 'patient';
+-- https://www.postgresql.org/docs/current/sql-createdatabase.html
+CREATE DATABASE hotel;
+
+-- https://www.postgresql.org/docs/current/role-attributes.html
+-- https://www.postgresql.org/docs/current/ddl-priv.html
+-- https://www.postgresql.org/docs/current/sql-grant.html
+GRANT ALL ON DATABASE hotel TO hotel;
+
+-- https://www.postgresql.org/docs/current/sql-createtablespace.html
+CREATE TABLESPACE hotelspace OWNER hotel LOCATION '/tablespace/hotel';
