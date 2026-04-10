@@ -1,10 +1,11 @@
 """Geschäftslogik zum Lesen von Hoteldaten."""
 
+from collections.abc import Mapping
 from typing import Final
 
 from loguru import logger
 
-from hotel.repository import HotelRepository, Session
+from hotel.repository import HotelRepository, Pageable, Session, Slice
 from hotel.service.exceptions import NotFoundError
 from hotel.service.hotel_dto import HotelDTO
 
@@ -40,3 +41,34 @@ class HotelService:
 
         logger.debug("{}", hotel_dto)
         return hotel_dto
+
+    def find(
+        self,
+        suchparameter: Mapping[str, str],
+        pageable: Pageable,
+    ) -> Slice[HotelDTO]:
+        """Suche mit Suchparameter.
+
+        :param suchparameter: Suchparameter
+        :return: Liste der gefundenen Hotels
+        :rtype: Slice[HotelDTO]
+        :raises NotFoundError: Falls keine Hotels gefunden wurden
+        """
+        logger.debug("{}", suchparameter)
+        with Session() as session:
+            hotel_slice: Final = self.repo.find(
+                suchparameter=suchparameter, pageable=pageable, session=session
+            )
+            if len(hotel_slice.content) == 0:
+                raise NotFoundError(suchparameter=suchparameter)
+
+            hotel_dto: Final = tuple(
+                HotelDTO(hotel) for hotel in hotel_slice.content
+            )
+            session.commit()
+
+        hotel_dto_slice = Slice(
+            content=hotel_dto, total_elements=hotel_slice.total_elements
+        )
+        logger.debug("{}", hotel_dto_slice)
+        return hotel_dto_slice
