@@ -108,7 +108,7 @@ def put(
 
 
 @hotel_write_router.delete("/{hotel_id}")
-def hotel_id(
+def delete_by_id(
     hotel_id: int,
     service: Annotated[HotelWriteService, Depends(get_write_service)],
 ) -> Response:
