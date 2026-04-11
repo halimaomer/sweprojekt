@@ -1,7 +1,7 @@
 """Entity-Klasse für den Standort."""
 
 from sqlalchemy import ForeignKey, Identity
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from hotel.entity.base import Base
 
