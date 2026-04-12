@@ -1,12 +1,15 @@
 """Repository fuer persistente Hoteldaten."""
 
+from collections.abc import Mapping, Sequence
 from typing import Final
 
 from loguru import logger
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session, joinedload
 
 from hotel.entity.hotel import Hotel
+from hotel.repository.pageable import Pageable
+from hotel.repository.slice import Slice
 
 
 class HotelRepository:
@@ -34,6 +37,96 @@ class HotelRepository:
 
         logger.debug("{}", hotel)
         return hotel
+
+    def find(
+        self,
+        suchparameter: Mapping[str, str],
+        pageable: Pageable,
+        session: Session,
+    ) -> Slice[Hotel]:
+        """Suche mit Suchparameter.
+
+        :param suchparameter: Suchparameter als Dictionary
+        :param pageable: Anzahl Datensätze und Seitennummer
+        :param session: Session für SQLAlchemy
+        :return: Tupel, d.h. readonly Liste, der gefundenen Hotels oder leeres Tupel
+        :rtype: Slice[Hotel]
+        """
+        log_str: Final = "{}"
+        logger.debug(log_str, suchparameter)
+        if not suchparameter:
+            return self._find_all(pageable=pageable, session=session)
+
+        for key, value in suchparameter.items():
+            if key == "name":
+                hotels = self._find_by_name(
+                    teil=value, pageable=pageable, session=session
+                )
+                logger.debug(log_str, hotels)
+                return hotels
+        return Slice(content=(), total_elements=0)
+
+    def _find_all(self, pageable: Pageable, session: Session) -> Slice[Hotel]:
+        logger.debug("aufgerufen")
+        offset = pageable.number * pageable.size
+        statement: Final = (
+            (
+                select(Hotel)
+                .options(joinedload(Hotel.standort))
+                .limit(pageable.size)
+                .offset(offset)
+            )
+            if pageable.size != 0
+            else (select(Hotel).options(joinedload(Hotel.standort)))
+        )
+        hotels: Final = (session.scalars(statement)).all()
+        anzahl: Final = self._count_all_rows(session)
+        hotel_slice: Final = Slice(content=tuple(hotels), total_elements=anzahl)
+        logger.debug("hotel_slice={}", hotel_slice)
+        return hotel_slice
+
+    def _count_all_rows(self, session: Session) -> int:
+        statement: Final = select(func.count()).select_from(Hotel)
+        count: Final = session.execute(statement).scalar()
+        return count if count is not None else 0
+
+    def _find_by_name(
+        self,
+        teil: str,
+        pageable: Pageable,
+        session: Session,
+    ) -> Slice[Hotel]:
+        logger.debug("teil={}", teil)
+        offset = pageable.number * pageable.size
+        statement: Final = (
+            (
+                select(Hotel)
+                .options(joinedload(Hotel.standort))
+                .filter(Hotel.name.ilike(f"%{teil}%"))
+                .limit(pageable.size)
+                .offset(offset)
+            )
+            if pageable.size != 0
+            else (
+                select(Hotel)
+                .options(joinedload(Hotel.standort))
+                .filter(Hotel.name.ilike(f"%{teil}%"))
+            )
+        )
+        hotels: Final = session.scalars(statement).all()
+        anzahl: Final = self._count_rows_name(teil, session)
+        hotel_slice: Final = Slice(content=tuple(hotels), total_elements=anzahl)
+        logger.debug("{}", hotel_slice)
+        return hotel_slice
+
+    def _count_rows_name(self, teil: str, session: Session) -> int:
+        statement: Final = (
+            select(func.count())
+            .select_from(Hotel)
+            .filter(Hotel.name.ilike(f"%{teil}%"))
+        )
+        count: Final = session.execute(statement).scalar()
+        return count if count is not None else 0
 
     def create(self, hotel: Hotel, session: Session) -> Hotel:
         """Ein neues Hotel speichern.
@@ -87,3 +180,23 @@ class HotelRepository:
             return
         session.delete(hotel)
         logger.debug("ok")
+
+    def find_name(self, teil: str, session: Session) -> Sequence[str]:
+        """Suche Namen zu einem Teilstring.
+
+        :param teil: Teilstring zu den gesuchten Namen
+        :param session: Session für SQLAlchemy
+        :return: Liste der gefundenen Namen oder eine leere Liste
+        :rtype: Sequence[str]
+        """
+        logger.debug("teil={}", teil)
+
+        statement: Final = (
+            select(Hotel.name)
+            .filter(Hotel.name.ilike(f"%{teil}%"))
+            .distinct()
+        )
+        namen: Final = (session.scalars(statement)).all()
+
+        logger.debug("namen={}", namen)
+        return namen
