@@ -23,11 +23,11 @@ from fastapi import Depends
 from keycloak import KeycloakConnectionError
 from loguru import logger
 
-from patient.config import csv_config
-from patient.config.dev_modus import dev_keycloak_populate
-from patient.security import User, UserService
-from patient.security.dependencies import get_user_service
-from patient.security.role import Role
+from hotel.config import csv_config
+from hotel.config.dev_modus import dev_keycloak_populate
+from hotel.security import User, UserService
+from hotel.security.dependencies import get_user_service
+from hotel.security.role import Role
 
 __all__ = [
     "KeycloakPopulateService",

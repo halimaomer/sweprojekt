@@ -21,11 +21,11 @@ from fastapi import APIRouter, Depends, Request
 from fastapi.responses import JSONResponse
 from loguru import logger
 
-from patient.config.dev.keycloak_populate import (
+from hotel.config.dev.keycloak_populate import (
     KeycloakPopulateService,
     get_keycloak_populate_service,
 )
-from patient.security import Role, RolesRequired, User
+from hotel.security import Role, RolesRequired, User
 
 __all__ = ["router"]
 
