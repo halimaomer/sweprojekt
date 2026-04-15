@@ -12,6 +12,7 @@ from hotel.repository.slice import Slice
 from hotel.router.constants import ETAG, IF_NONE_MATCH, IF_NONE_MATCH_MIN_LEN
 from hotel.router.dependencies import get_service
 from hotel.router.page import Page
+from hotel.security import Role, RolesRequired
 from hotel.service import HotelDTO, HotelService
 
 __all__ = ["hotel_router"]
@@ -20,7 +21,10 @@ __all__ = ["hotel_router"]
 hotel_router: Final = APIRouter(tags=["Lesen"])
 
 
-@hotel_router.get("/{hotel_id}")
+@hotel_router.get(
+    "/{hotel_id}",
+    dependencies=[Depends(RolesRequired([Role.ADMIN, Role.PATIENT]))],
+)
 def get_by_id(
     hotel_id: int,
     request: Request,
@@ -54,7 +58,7 @@ def get_by_id(
     )
 
 
-@hotel_router.get("")
+@hotel_router.get("", dependencies=[Depends(RolesRequired(Role.ADMIN))])
 def get(
     request: Request,
     service: Annotated[HotelService, Depends(get_service)],
@@ -89,7 +93,7 @@ def get(
     return JSONResponse(content=result)
 
 
-@hotel_router.get("/name/{teil}")
+@hotel_router.get("/name/{teil}", dependencies=[Depends(RolesRequired(Role.ADMIN))])
 def get_name(
     teil: str,
     service: Annotated[HotelService, Depends(get_service)],
