@@ -5,7 +5,8 @@ from typing import Final
 from loguru import logger
 
 from hotel.entity.hotel import Hotel
-from hotel.repository.hotel_repository import HotelRepository, Session
+from hotel.repository.hotel_repository import HotelRepository
+from hotel.repository.session_factory import Session
 from hotel.service.exceptions import NotFoundError, VersionOutdatedError
 from hotel.service.hotel_dto import HotelDTO
 from hotel.service.mailer import send_mail
