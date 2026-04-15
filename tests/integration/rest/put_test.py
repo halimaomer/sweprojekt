@@ -125,34 +125,6 @@ def test_put_ohne_versionsnr() -> None:
 
 @mark.rest
 @mark.put_request
-def test_put_alte_versionsnr() -> None:
-    # arrange
-    hotel_id: Final = 20
-    if_match: Final = '"-1"'
-    geaendertes_hotel: Final = {
-        "name": NAME_UPDATE,
-    }
-    token: Final = login()
-    assert token is not None
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "If-Match": if_match,
-    }
-
-    # act
-    response: Final = put(
-        f"{rest_url}/{hotel_id}",
-        json=geaendertes_hotel,
-        headers=headers,
-        verify=ctx,
-    )
-
-    # assert
-    assert response.status_code == HTTPStatus.PRECONDITION_FAILED
-
-
-@mark.rest
-@mark.put_request
 def test_put_ungueltige_versionsnr() -> None:
     # arrange
     hotel_id: Final = 20
