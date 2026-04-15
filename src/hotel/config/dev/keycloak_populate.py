@@ -1,15 +1,13 @@
 """Neuladen von Keycloak im Modus DEV."""
 
-from pathlib import Path
 from typing import Annotated, Final
 
 from fastapi import Depends
 from keycloak import KeycloakConnectionError
 from loguru import logger
 
-from hotel.config import csv_config
 from hotel.config.dev_modus import dev_keycloak_populate
-from hotel.security import UserService
+from hotel.security import Role, User, UserService
 from hotel.security.dependencies import get_user_service
 
 __all__ = [
@@ -47,31 +45,16 @@ class KeycloakPopulateService:
         logger.debug("Alle User außer 'admin' geloescht")
 
     def _create_users(self) -> None:
-        logger.debug("Aktuelles Verzeichnis: {}", Path.cwd())
-        csv_config_path = Path(csv_config)
-        if not csv_config_path.is_file():
-            logger.error(f"CSV-Datei {csv_config_path} existiert nicht")
-            return
-        logger.debug("CSV-Datei: {}", csv_config_path)
-
-        # with csv_config_path.open(encoding=utf8) as csv_file:
-        #     csv_reader = reader(csv_file, delimiter=";")
-        #     kopfzeile = True
-        #     for row in csv_reader:
-        #         if kopfzeile:
-        #             kopfzeile = False
-        #             continue
-
-        #         username = row[1]
-        #         if username == "admin":
-        #             continue
-        #         user = User(
-        #             username=username,
-        #             roles=[Role.PATIENT],
-        #             password="p",  # NOSONAR
-        #         )
-        #         self.user_service.create_user(user=user)
-        # logger.debug("Alle User zu 'parkhaus.csv' neu angelegt")
+        self.user_service.create_user(
+            User(
+                username="alice",
+                email="alice@test.de",
+                nachname="Alice",
+                vorname="Alice",
+                roles=[Role.PATIENT],
+                password="p",  # noqa: S106
+            )
+        )
 
 
 def get_keycloak_populate_service(
