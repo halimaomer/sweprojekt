@@ -5,7 +5,10 @@ from typing import Final
 
 from loguru import logger
 
-from hotel.repository import HotelRepository, Pageable, Session, Slice
+from hotel.repository.hotel_repository import HotelRepository
+from hotel.repository.pageable import Pageable
+from hotel.repository.session_factory import Session
+from hotel.repository.slice import Slice
 from hotel.service.exceptions import NotFoundError
 from hotel.service.hotel_dto import HotelDTO
 
