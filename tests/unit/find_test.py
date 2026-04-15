@@ -59,7 +59,8 @@ def test_find_by_name(hotel_service, session_mock) -> None:
     session_mock.scalars.return_value.all.return_value = [hotel_mock]
 
     hotels_slice = hotel_service.find(
-        suchparameter=suchparameter, pageable=pageable,
+        suchparameter=suchparameter,
+        pageable=pageable,
     )
 
     assert len(hotels_slice.content) == 1

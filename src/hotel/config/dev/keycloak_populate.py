@@ -1,21 +1,5 @@
-# Copyright (C) 2022 - present Juergen Zimmermann, Hochschule Karlsruhe
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 """Neuladen von Keycloak im Modus DEV."""
 
-from csv import reader
 from pathlib import Path
 from typing import Annotated, Final
 
@@ -25,9 +9,8 @@ from loguru import logger
 
 from hotel.config import csv_config
 from hotel.config.dev_modus import dev_keycloak_populate
-from hotel.security import User, UserService
+from hotel.security import UserService
 from hotel.security.dependencies import get_user_service
-from hotel.security.role import Role
 
 __all__ = [
     "KeycloakPopulateService",
@@ -43,7 +26,7 @@ class KeycloakPopulateService:
     """Service für das Neuladen von Keycloak im Modus DEV."""
 
     def __init__(self, user_service: UserService) -> None:
-        """Konstruktor mit abhängigem PatientRepository."""
+        """Konstruktor mit abhängigem hotelRepository."""
         self.user_service: UserService = user_service
 
     def populate(self) -> None:
@@ -71,30 +54,24 @@ class KeycloakPopulateService:
             return
         logger.debug("CSV-Datei: {}", csv_config_path)
 
-        with csv_config_path.open(encoding=utf8) as csv_file:
-            csv_reader = reader(csv_file, delimiter=";")
-            kopfzeile = True
-            for row in csv_reader:
-                if kopfzeile:
-                    kopfzeile = False
-                    continue
+        # with csv_config_path.open(encoding=utf8) as csv_file:
+        #     csv_reader = reader(csv_file, delimiter=";")
+        #     kopfzeile = True
+        #     for row in csv_reader:
+        #         if kopfzeile:
+        #             kopfzeile = False
+        #             continue
 
-                username = row[11]
-                if username == "admin":
-                    continue
-
-                email = row[3]
-                nachname = row[2]
-                user = User(
-                    username=username,
-                    email=email,
-                    nachname=nachname,
-                    vorname=nachname,
-                    roles=[Role.PATIENT],
-                    password="p",  # noqa: S106 # NOSONAR
-                )
-                self.user_service.create_user(user=user)
-        logger.debug("Alle User zu 'patient.csv' neu angelegt")
+        #         username = row[1]
+        #         if username == "admin":
+        #             continue
+        #         user = User(
+        #             username=username,
+        #             roles=[Role.PATIENT],
+        #             password="p",  # NOSONAR
+        #         )
+        #         self.user_service.create_user(user=user)
+        # logger.debug("Alle User zu 'parkhaus.csv' neu angelegt")
 
 
 def get_keycloak_populate_service(

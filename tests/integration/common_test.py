@@ -115,6 +115,4 @@ def keycloak_populate() -> None:
         timeout=timeout,
     )
     if response.status_code != HTTPStatus.NO_CONTENT:
-        raise RuntimeError(
-            f"keycloak_populate() mit Statuscode {response.status_code}"
-        )
+        raise RuntimeError(f"keycloak_populate() mit Statuscode {response.status_code}")
